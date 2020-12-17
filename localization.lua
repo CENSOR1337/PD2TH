@@ -1,7 +1,39 @@
 local LocalizationData = {}
-local HTTP_request = "https://mw.ac.th/localization/th.json"
+local HTTP_request = "http://127.0.0.1/th.json"
+local translateOption = {"subtitle"}
 
-local translateOption = {"subtitle", "menu"}
+function get_json_localized_string(jsonData)
+	local returnJson = {}
+	local tempJsonData = json.decode(jsonData)
+	log("wut")
+	log(table.getn(tempJsonData))
+	if (jsonData) then
+		for key, value in pairs(jsonData) do
+			if (type(value) ~= "table") then
+				if not (string.is_nil_or_empty(tostring(value))) and key then
+					returnJson[key] = value
+
+
+				end
+			end
+		end
+		if table.getn(translateOption) > 0 then
+			for key, value in pairs(translateOption) do
+				if jsonData[tostring(value)] then
+					for k, v in pairs(jsonData[tostring(value)]) do
+						if not returnJson[k] then
+							if not (string.is_nil_or_empty(tostring(v))) and k then
+								returnJson[k] = v
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return returnJson
+end
 
 Hooks:Add(
 	"LocalizationManagerPostInit",
@@ -18,20 +50,18 @@ Hooks:Add(
 				local lastStringJsonChar = string.sub(stringJsonData, lengthStringJson - 1, lengthStringJson - 1)
 
 				if (firstStringJsonChar == "{" and lastStringJsonChar == "}") then
-					local jsonData = json.decode(data)
-					if (jsonData) then
-						for key, value in pairs(translateOption) do
-							for k, v in pairs(jsonData[tostring(value)]) do
-								if not (string.is_nil_or_empty(tostring(v))) and k then
-									LocalizationData[k] = v
-								end
-							end
-						end
-						LocalizationManager:add_localized_strings(LocalizationData)
-					end
+					local tempJsonData = json.dncode(data)
+					log(tempJsonData)
+
+					get_json_localized_string(data)
 				else
 					-- offline mode do later
-					log("json failed")
+					log("[PAYDAY 2 Localization Tool] : " .. "json failed")
+				end
+
+
+				if table.getn(LocalizationData) > 0 then
+					LocalizationManager:add_localized_strings(LocalizationData)
 				end
 			end
 		)
