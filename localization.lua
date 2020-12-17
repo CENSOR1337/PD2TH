@@ -1,19 +1,14 @@
 local LocalizationData = {}
 local HTTP_request = "http://127.0.0.1/th.json"
-local translateOption = {"subtitle"}
+local translateOption = {}
 
 function get_json_localized_string(jsonData)
-	local returnJson = {}
-	local tempJsonData = json.decode(jsonData)
-	log("wut")
-	log(table.getn(tempJsonData))
+	local returnJsonData = {}
 	if (jsonData) then
 		for key, value in pairs(jsonData) do
 			if (type(value) ~= "table") then
 				if not (string.is_nil_or_empty(tostring(value))) and key then
-					returnJson[key] = value
-
-
+					returnJsonData[key] = value
 				end
 			end
 		end
@@ -21,9 +16,9 @@ function get_json_localized_string(jsonData)
 			for key, value in pairs(translateOption) do
 				if jsonData[tostring(value)] then
 					for k, v in pairs(jsonData[tostring(value)]) do
-						if not returnJson[k] then
+						if not returnJsonData[k] then
 							if not (string.is_nil_or_empty(tostring(v))) and k then
-								returnJson[k] = v
+								returnJsonData[k] = v
 							end
 						end
 					end
@@ -31,8 +26,7 @@ function get_json_localized_string(jsonData)
 			end
 		end
 	end
-
-	return returnJson
+	return returnJsonData
 end
 
 Hooks:Add(
@@ -50,19 +44,13 @@ Hooks:Add(
 				local lastStringJsonChar = string.sub(stringJsonData, lengthStringJson - 1, lengthStringJson - 1)
 
 				if (firstStringJsonChar == "{" and lastStringJsonChar == "}") then
-					local tempJsonData = json.dncode(data)
-					log(tempJsonData)
-
-					get_json_localized_string(data)
+					local jsonData = json.decode(data)
+					LocalizationData = get_json_localized_string(jsonData)
 				else
-					-- offline mode do later
+					-- offline mode do later (or maybe not cause lul)
 					log("[PAYDAY 2 Localization Tool] : " .. "json failed")
 				end
-
-
-				if table.getn(LocalizationData) > 0 then
-					LocalizationManager:add_localized_strings(LocalizationData)
-				end
+				LocalizationManager:add_localized_strings(LocalizationData)
 			end
 		)
 	end
