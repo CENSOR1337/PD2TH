@@ -1,5 +1,5 @@
 local LocalizationData = {}
-local HTTP_request = "http://127.0.0.1/th.json"
+local HTTP_request = "http://127.0.0.1/localization/th.json"
 local translateOption = {}
 
 function get_json_localized_string(jsonData)
@@ -55,3 +55,21 @@ Hooks:Add(
 		)
 	end
 )
+
+function LocalizationManager.text( self, str, macros )
+
+	if self._custom_localizations[str] then
+		local return_str = self._custom_localizations[str]
+		self._macro_context = macros
+		return_str = self:_localizer_post_process( return_str )
+		self._macro_context = nil
+		if macros and type(macros) == "table" then
+			for k, v in pairs( macros ) do
+				return_str = return_str:gsub( "$" .. k, v)
+			end
+		end
+		return return_str
+	end
+	return self.orig.text(self, str, macros)
+
+end
