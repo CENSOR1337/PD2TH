@@ -1,0 +1,28 @@
+{
+    "name": "PAYDAY 2 THAI LANGUAGE Mod",
+    "description": "ชุดปรับแต่งตัวเกมภาษาไทยให้กับเกม PAYDAY 2",
+    "author": "",
+    "image": "",
+    "color": "0 0 0",
+    "contact": "CENSOR_1337",
+    "version": "1.0.0",
+    "blt_version": 2,
+    "hooks": [
+        {
+            "hook_id": "lib/managers/localizationmanager",
+            "script_path": "localization.lua"
+        },
+        {
+            "hook_id": "lib/utils/LevelLoadingScreenGuiScript",
+            "script_path": "lua/level_loading_screen_gui_script.lua"
+        },
+        {
+            "hook_id": "lib/utils/lightloadingscreenguiscript",
+            "script_path": "lua/light_loading_screen_gui_script.lua"
+        },
+        {
+            "hook_id": "lib/units/props/timergui",
+            "script_path": "lua/timergui.lua"
+        }
+    ]
+}
