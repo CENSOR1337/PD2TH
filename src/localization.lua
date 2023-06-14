@@ -3,8 +3,7 @@ local HTTP_request = "http://censor1337.github.io/PD2_Localizations/localization
 local SaveFileName = "thai_loc.txt"
 local translateOption = {}
 
-function getTableSize(t)
-	-- https://stackoverflow.com/a/53287006
+local function getTableSize(t)
 	local count = 0
 	for _, __ in pairs(t) do
 		count = count + 1
